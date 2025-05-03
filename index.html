@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Airways - Check-in System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #005f87;
+            --primary-light: #e6f2f8;
+            --secondary: #e31937;
+            --accent: #ffc72c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --business-class: #6f42c1;
+            --first-class: #d63384;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8fa;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, #003d5b 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-right: 20px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 95, 135, 0.2);
+        }
+
+        .header-text h1 {
+            color: var(--primary);
+            margin: 0;
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .header-text p {
+            color: var(--gray);
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 0 0 20px 0;
+            font-weight: 600;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 12px;
+            color: var(--secondary);
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--light-gray);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        label i {
+            margin-right: 8px;
+            color: var(--secondary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 95, 135, 0.1);
+        }
+
+        input::placeholder {
+            color: #adb5bd;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary) 0%, #004a6a 100%);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 8px rgba(0, 95, 135, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 95, 135, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button i {
+            margin-right: 10px;
+        }
+
+        .queue-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .passenger-card {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .passenger-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .passenger-card.business {
+            border-left-color: var(--business-class);
+            background-color: rgba(111, 66, 193, 0.03);
+        }
+
+        .passenger-card.first {
+            border-left-color: var(--first-class);
+            background-color: rgba(214, 51, 132, 0.03);
+        }
+
+        .passenger-card h3 {
+            margin: 0 0 12px 0;
+            color: var(--primary);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .passenger-card h3 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .passenger-card p {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .passenger-card p i {
+            margin-right: 10px;
+            width: 18px;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        .flight-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 12px;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            margin-right: 10px;
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                padding: 30px;
+                margin: 20px auto;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+            
+            .queue-display {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-header button {
+                margin-top: 15px;
+                width: 100%;
+            }
+        }
+
+        /* Animation for new passenger cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-plane"></i>
+            </div>
+            <div class="header-text">
+                <h1>Global Airways Check-in</h1>
+                <p>Professional passenger management system</p>
+            </div>
+        </div>
+
+        <!-- Check-in Form -->
+        <div class="section">
+            <h2><i class="fas fa-user-check"></i>Passenger Check-in</h2>
+            <form id="checkinForm">
+                <div class="form-group">
+                    <label for="booking_ref"><i class="fas fa-ticket-alt"></i>Booking Reference</label>
+                    <input type="text" id="booking_ref" required placeholder="GA-123456">
+                </div>
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i>Passenger Name</label>
+                    <input type="text" id="name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="flight"><i class="fas fa-plane-departure"></i>Flight Number</label>
+                    <input type="text" id="flight" required placeholder="GA-204">
+                </div>
+                <div class="form-group">
+                    <label for="class"><i class="fas fa-star"></i>Travel Class</label>
+                    <select id="class" required>
+                        <option value="economy">Economy Class</option>
+                        <option value="business">Business Class</option>
+                        <option value="first">First Class</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="seat_pref"><i class="fas fa-chair"></i>Seat Preference</label>
+                    <select id="seat_pref">
+                        <option value="none">No Preference</option>
+                        <option value="window">Window Seat</option>
+                        <option value="aisle">Aisle Seat</option>
+                    </select>
+                </div>
+                <button type="submit"><i class="fas fa-check-circle"></i>Check In Passenger</button>
+            </form>
+        </div>
+
+        <!-- Queue Display -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i>Check-in Queue <span class="flight-status">ON TIME</span></h2>
+                <button id="nextPassenger"><i class="fas fa-user-plus"></i>Next Passenger</button>
+            </div>
+            <div class="queue-display" id="queueDisplay">
+                <div class="passenger-card business fade-in">
+                    <div class="status-badge">Business</div>
+                    <h3><i class="fas fa-user-tie"></i>David T</h3>
+                    <p><i class="fas fa-plane"></i>Flight: PX234</p>
+                    <p><i class="fas fa-star"></i>Class: Business</p>
+                    <p><i class="fas fa-clock"></i>Checked in: 12:14 AM</p>
+                </div>
+                <div class="passenger-card business fade-in">
+                    <div class="status-badge">Business</div>
+                    <h3><i class="fas fa-user-tie"></i>Sarah Johnson</h3>
+                    <p><i class="fas fa-plane"></i>Flight: GA-204</p>
+                    <p><i class="fas fa-star"></i>Class: Business</p>
+                    <p><i class="fas fa-clock"></i>Checked in: 10:25 AM</p>
+                </div>
+                <div class="passenger-card fade-in">
+                    <h3><i class="fas fa-user"></i>Michael Chen</h3>
+                    <p><i class="fas fa-plane"></i>Flight: GA-204</p>
+                    <p><i class="fas fa-star"></i>Class: Economy</p>
+                    <p><i class="fas fa-clock"></i>Checked in: 10:30 AM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seat Assignment Form -->
+        <div class="section">
+            <h2><i class="fas fa-chair"></i>Seat Assignment</h2>
+            <form id="seatAssignmentForm">
+                <div class="form-group">
+                    <label for="assign_booking_ref"><i class="fas fa-ticket-alt"></i>Booking Reference</label>
+                    <input type="text" id="assign_booking_ref" required placeholder="GA-123456">
+                </div>
+                <div class="form-group">
+                    <label for="seat_number"><i class="fas fa-chair"></i>Seat Number</label>
+                    <input type="text" id="seat_number" required placeholder="12A">
+                </div>
+                <button type="submit"><i class="fas fa-check-circle"></i>Assign Seat</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <i class="fas fa-check-circle"></i>
+        <span class="message">Operation successful</span>
+    </div>
+
+    <script>
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.querySelector('.message').textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Check-in Form Submission
+        document.getElementById('checkinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                booking_ref: document.getElementById('booking_ref').value,
+                name: document.getElementById('name').value,
+                flight: document.getElementById('flight').value,
+                class: document.getElementById('class').value,
+                seat_pref: document.getElementById('seat_pref').value
+            };
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/checkin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data)
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showNotification('Passenger checked in successfully!');
+                    e.target.reset();
+                } else if (result.status === 'failed' && result.message === 'Duplicate booking reference.') {
+                    showNotification('Duplicate booking reference!', 'error');
+                } else {
+                    showNotification('Error during check-in', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Network error occurred', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Next Passenger Button
+        document.getElementById('nextPassenger').addEventListener('click', async () => {
+            const btn = document.getElementById('nextPassenger');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/next_passenger');
+                const result = await response.json();
+
+                if (result.status === 'empty') {
+                    showNotification('No passengers in queue', 'warning');
+                } else {
+                    const queueDisplay = document.getElementById('queueDisplay');
+                    const passengerCard = document.createElement('div');
+                    passengerCard.className = `passenger-card ${result.passenger.class !== 'economy' ? result.passenger.class : ''} fade-in`;
+                    
+                    if (result.passenger.class !== 'economy') {
+                        passengerCard.innerHTML = `
+                            <div class="status-badge">${result.passenger.class.charAt(0).toUpperCase() + result.passenger.class.slice(1)}</div>
+                        `;
+                    }
+                    
+                    passengerCard.innerHTML += ` 
+                        <h3><i class="${result.passenger.class === 'economy' ? 'fas fa-user' : 'fas fa-user-tie'}"></i>${result.passenger.name}</h3>
+                        <p><i class="fas fa-plane"></i>Flight: ${result.passenger.flight}</p>
+                        <p><i class="fas fa-star"></i>Class: ${result.passenger.class.charAt(0).toUpperCase() + result.passenger.class.slice(1)}</p>
+                        <p><i class="fas fa-clock"></i>Checked in: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                    `;
+
+                    queueDisplay.insertBefore(passengerCard, queueDisplay.firstChild);
+                    showNotification('Passenger processed successfully');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error fetching next passenger', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Seat Assignment Form Submission
+        document.getElementById('seatAssignmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                booking_ref: document.getElementById('assign_booking_ref').value,
+                seat_numb: document.getElementById('seat_number').value
+            };
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/assign_seat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data)
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showNotification('Seat assigned successfully!');
+                    e.target.reset();
+                } else {
+                    showNotification(result.message || 'Seat assignment failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error during seat assignment', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
